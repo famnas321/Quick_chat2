@@ -1,5 +1,7 @@
 const user= require('../model/user')
 const bcrypt= require('bcryptjs')
+const jwt= require("jsonwebtoken")
+
 exports.userSignUP=  async (req,res)=>{
     const {email,password,firstname,lastname,profilepic}= req.body
     try{
@@ -22,4 +24,25 @@ exports.userSignUP=  async (req,res)=>{
      res.status(500).json({message:"error occured in server", error:error})
      console.log(error)
     }
+}
+
+exports.userLogin= async (req,res)=>{
+    const {email,password}= req.body
+   try{
+    const findUser= await user.findOne({email})
+    if(!findUser){
+      return res.status(404).json({message:"Email is not found in data base "})
+
+    }
+    const isValid = await bcrypt.compare(password, findUser.password)
+    if(!isValid){
+      return res.status(404).json({message:"Invalid Password"})
+    }
+   const token = jwt.sign({userId:findUser._id},process.env.SECRET_KEY,{expiresIn:"1d"})
+   res.status(200).json({message:"User login succusful",token})
+   }catch(error){
+     res.status(500).json({message:"Unexpected error occures in server", error})
+     console.log(error,"error while user login")
+   }
+
 }
