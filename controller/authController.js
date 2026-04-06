@@ -3,6 +3,7 @@ const bcrypt= require('bcryptjs')
 const jwt= require("jsonwebtoken")
 
 exports.userSignUP=  async (req,res)=>{
+  
     const {email,password,firstname,lastname,profilepic}= req.body
     try{
        const userExist= await user.findOne({email:email})
@@ -22,7 +23,7 @@ exports.userSignUP=  async (req,res)=>{
     }
    catch(error){
      res.status(500).json({message:"error occured in server", error:error})
-     console.log(error)
+     console.log(error,"this is error from signup")
     }
 }
 
