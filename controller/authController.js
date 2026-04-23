@@ -5,6 +5,7 @@ const jwt= require("jsonwebtoken")
 exports.userSignUP=  async (req,res)=>{
   
     const {email,password,firstname,lastname,profilepic}= req.body
+      console.log(email,"this is from autco")
     try{
        const userExist= await user.findOne({email:email})
        if (userExist){
@@ -29,8 +30,10 @@ exports.userSignUP=  async (req,res)=>{
 
 exports.userLogin= async (req,res)=>{
     const {email,password}= req.body
+ 
    try{
     const findUser= await user.findOne({email})
+    console.log(findUser,"this is from controller")
     if(!findUser){
       return res.status(404).json({message:"Email is not found in data base "})
 
@@ -39,6 +42,7 @@ exports.userLogin= async (req,res)=>{
     if(!isValid){
       return res.status(404).json({message:"Invalid Password"})
     }
+    
    const token = jwt.sign({userId:findUser._id},process.env.SECRET_KEY,{expiresIn:"1d"})
    res.status(200).json({message:"User login succusful",token})
    }catch(error){
